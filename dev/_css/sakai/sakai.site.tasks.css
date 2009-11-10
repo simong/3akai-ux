@@ -1,0 +1,340 @@
+
+/* TASK HEADER BAR */
+.site_tasks_header {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(/dev/_images/block_tr.png) no-repeat scroll right top;
+    cursor: move;
+    padding: 0 8px 0 0;
+    width: auto;
+    margin-top: -12px;
+}
+
+.site_tasks_header_inner {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(/dev/_images/block_tl.png) no-repeat scroll left top;
+    height: 50px;
+}
+
+.site_tasks_header_inner img {
+    float: left;
+    padding: 17px 17px 0px 17px;
+}
+
+.site_tasks_header_inner h3 {
+    padding-top: 17px;
+    font-weigt: normal;
+    color: #8e8e90;
+}
+
+.site_tasks_header_inner #site_tasks_submit {
+    float: right;
+    padding: 13px 13px;
+}
+
+/* TASKS TOP SMALL DESCRIPTION BAR*/
+.calendar_date_small {
+    width: 30px;
+    border: 1px solid #cccccc;
+    float: left;
+}
+
+.calendar_date_small span {
+    float: left;
+    width: 30px;
+    text-align: center;
+}
+
+.calendar_date_small .calendar_date_month {
+    background-color: #8f0919;
+    color: #ffffff;
+    font-variant: small-caps;
+}
+
+.calendar_date_small .calendar_date_day {
+    font-weight: bold;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    display: inline-block;
+}
+
+/* for IE/Mac */
+.site_tasks_headers {
+    border-bottom: 1px solid #cccccc;
+    margin-top: 10px;
+    padding-bottom: 10px;
+}
+
+.site_tasks_headers_text {
+    float: left;
+    width: 500px;
+    margin-left: 10px;
+}
+
+/* EXTRA READING MATERIAL */
+.site_task_extra_reading_material {
+    float: right;
+    width: 200px;
+    background-color: #e4e9ec;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.site_task_extra_reading_material ul {
+    background-color: #f0f1f5;
+    margin: 0px;
+    margin-top: 10px;
+}
+
+.site_task_extra_reading_material ul li {
+    border-top: 1px solid #d4d8db;
+    padding: 5px;
+    padding-left: 10px;
+    list-style-type: none;
+    color: #757a7d;
+    word-wrap: break-word;
+    font-size: 0.85em;
+}
+
+.site_task_extra_reading_material ul li a {
+    color: #058EC4;
+    text-decoration: underline;
+}
+
+.site_task_extra_reading_material ul li.site_task_extra_reading_material_file img {
+    height: 16px;
+    width: 16px;
+    margin-right: 4px;
+}
+
+/* SUBMIT ASSIGNNMENT */
+.site_tasks_top img {
+    float: left;
+	margin-right:10px;
+}
+
+.site_tasks_top h3 {
+    font-weigt: normal;
+    color: #8e8e90;
+    padding-left: 5px;
+}
+
+.site_tasks_top a {
+    float: right;
+    color: #3399CC;
+}
+
+.fl-content {
+    background-color: #FFFFFF;
+    border-left: 3px solid #D4DADE;
+    border-right: 3px solid #D4DADE;
+    margin: 0;
+    margin-top: -3px;
+}
+
+.fl-options {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(../../_images/block_br.png) no-repeat scroll right top;
+    margin-top: -6px;
+    padding: 0 8px 0 0;
+}
+
+.fl-options-inner {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(../../_images/block_bl.png) no-repeat scroll left top;
+    height: 40px;
+    padding: 0 0 0 14px;
+    width: auto;
+}
+
+.sakai_site_contents_main {
+    padding-top: 20px !important;
+}
+
+.sakai_site_contents_main .site_tasks_header {
+    margin-top: 0px;
+}
+
+.site_tasks_header_inner span {
+    width: 32%;
+    display: block;
+    float: left;
+    padding-top: 17px;
+}
+
+.site_tasks_header_inner span:first-child {
+    padding-left: 17px;
+}
+
+.sakai_site_contents_main .site_tasks_assignment_col {
+    width: 30%;
+    float: left;
+    min-height: 40px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.sakai_site_contents_main .site_tasks_assignment_title a {
+    color: #3399CC;
+}
+
+.site_tasks_assignment_due, .site_tasks_assignment_date {
+    border-left: 1px solid #ccc;
+}
+
+.sakai_site_contents_main .site_tasks_assignment_date_date {
+    font-size: 2em;
+    float: left;
+    margin-top: 8px;
+    margin-left: 11px;
+}
+
+.sakai_site_contents_main .site_tasks_assignment_left {
+    float: left;
+    width: 15px;
+    margin-left: 4px;
+}
+
+/* SUBMISSION NOTES */
+.site_tasks_assignment_notes {
+    margin-top: 10px;
+    background-color: #dae2e5;
+    padding: 5px;
+}
+
+.site_tasks_assignment_notes h4 img {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.site_tasks_assignment_notes_inner {
+    margin: 10px;
+}
+
+.site_tasks_assignment_notes textarea {
+    margin-bottom: 10px;
+    height: 200px;
+    padding: 4px;
+    width: 98%;
+    background-color: #feffee;
+    border-top: 1px solid #878a83;
+    border-left: 1px solid #878a83;
+}
+
+.site_tasks_assignment_notes_inner input[type =
+"button"] {
+    border: 1px solid #ced3d6;
+    background-color: #fcfcfa;
+    padding: 0 5px;
+    margin-right: 8px;
+}
+
+.site_tasks_assignment_notes_inner a {
+    font-weight: normal;
+    color: #3399cc;
+    margin-left: 4px;
+}
+
+/* ATTACHMENTS */
+.site_tasks_assignment_attachments {
+    margin-top: 10px;
+    background-color: #e4e9ed;
+    padding: 10px;
+    padding-top: 6px;
+}
+
+.site_tasks_assignment_attachments_attached li {
+    border-bottom: 1px solid #ccc;
+    list-style-type: none;
+    width: 100%;
+    padding: 4px;
+    padding-bottom: 10px;
+}
+
+.site_tasks_assignment_attachments_attached li:hover {
+    background-color: #f0f1f5;
+    cursor: pointer;
+}
+
+.site_tasks_assignment_attachments_attached li img {
+    max-width: 16px;
+    max-height: 24px;
+    margin-right: 10px;
+}
+
+.site_tasks_assignment_attachments_attached li a {
+    color: #000000;
+    font-weight: bold;
+}
+
+.site_tasks_assignment_attachments_attached li a.site_tasks_assignment_attachments_attached_remove {
+    float: right;
+    color: #3399CC;
+    font-weight: normal;
+    margin-top: 2px;
+}
+
+.site_tasks_assignment_attachments_attached li a.site_tasks_assignment_attachments_attached_remove:hover {
+    text-decoration: underline;
+}
+
+/* SUBMIT */
+#site_tasks_assignment_buttons {
+    margin-top: 20px;
+}
+
+#site_tasks_assignment_cancel {
+    float: right;
+    color: #3399CC;
+    font-weight: normal;
+}
+
+.button-grey .button {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(/dev/_images/gray_button_right.png) no-repeat scroll right top;
+    border: medium none;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    height: 23px;
+    margin: 0 -10px 0 0;
+    padding: 3px 15px;
+}
+.button-grey .button img {
+    float: left;
+    margin-top: -2px;
+    margin-right: 9px;
+}
+
+.button-white { background: transparent url(../../_images/button-white-left.png) top left no-repeat; float: left;margin-right:7px;}
+.button-white .button {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(/dev/_images/button-white-right.png) no-repeat scroll right top;
+    border: medium none;
+    color: #000000;
+    cursor: pointer;
+    height: 18px;
+    margin: 0 -3px 0 0;
+    padding: 0px 9px;
+}
