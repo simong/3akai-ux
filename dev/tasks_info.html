@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Sakai 3 R&amp;D - Site View</title>
+	
+	<link rel="stylesheet" type="text/css" href="/dev/_css/FSS/fluid.reset.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/FSS/fluid.theme.mist.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/FSS/fluid.theme.hc.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/FSS/fluid.theme.rust.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/FSS/fluid.layout.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/FSS/fluid.text.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.core.2.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.search.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.search_b.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.treeview.css" />
+	<link rel="stylesheet" type="text/css" href="/devwidgets/chat3/css/chat.css"/>
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.base.css"/>
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.site.css"/>
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.dashboard.css"/>
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.3.css" />
+	<link rel="stylesheet" type="text/css" href="/dev/_css/sakai/sakai.site.tasks.css" />
+	
+	<script type="text/javascript" language="JavaScript" src="/dev/_configuration/widgets.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_configuration/config.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/Fluid/InfusionAll.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_javascript/_history/rsh.js"></script>	
+	<script type="text/javascript" language="JavaScript" src="/dev/_javascript/_history/site_history.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/sakai_util/BrowserDetect.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/sakai_util/trimpath.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/Jquery/jquery.corners.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/Jquery/jquery.simple.tree.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/Jquery/jqScrollPane.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/Jquery/jqModal.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/Jquery/jquery.cookie.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/AutoComplete/jquery.autocomplete.min.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/OpenSocial/message.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/sakai_util/sdata.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/sakai_util/querystring.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/dev/_lib/sakai_util/i18n.js"></script>
+	
+    </head>
+    
+    <body id="root" class="fl-centered fl-container sakai_site i18nable">
+		
+	<!-- EXPLORE BAR -->
+	<div id="widget_chat3" class="widget_inline"></div>
+		
+	<!-- HEADER -->
+	<div class="fl-container-flex header" >
+	    
+	    <div class="fl-fix fl-centered fixed-container">
+			
+			<div class="decor"><!-- --></div>
+			
+			<!-- SEARCH -->
+			<div class="search_container">
+			    <form class="search buttonBar fl-force-right" id="search_form" action="" method="post" onsubmit="return false;">
+					<input type="text" name="search" value="Search this site" id="search_filed" class="search_field" />
+					<a id="search_filed_button" class="button search_button" href="javascript:;"><span>Search</span></a>
+					<br class="clear" />
+			    </form>
+			</div>
+			
+			<!-- TITLE BAR  -->
+			<div class="site_heading fl-force-left">
+				<h1 id="sitetitle"></h1>
+			</div>
+	    </div>
+	    
+	</div>
+      
+	<!-- CONTENT -->
+	<div class="fl-fix fl-centered fixed-container">
+	    
+	    <!-- MAIN PAGE -->
+	    <div class="fl-col-mixed2 main_container column_splitter_sites" id="show_view_container">
+			
+			<!-- MAIN CONTENT -->
+			<div class="fl-col-main content_container">
+			    
+				<!-- TASKS HEADER -->
+				<div class="site_tasks_header">
+						<div class="site_tasks_header_inner">
+						<img alt="Tasks Icon" class="nav_titlebar_icon" src="/dev/_images/tasks_icon.png"/>
+						<div  id="site_tasks_submit">
+						<div class="button-grey">
+							<input type="button" value="+ Submit work" onclick="window.location='/dev/tasks_submit.html'" />
+						</div>
+						</div>
+						<h3>Tasks</h3>
+					</div>
+				</div>
+			    <!-- TOP BORDER -->
+			    <div class="content_top" style="display:none;"><div class="content_top_inner"></div></div>
+			    
+			    <div class="sakai_site_contents_main">
+				
+				<!-- REVISION HISTORY -->
+				<div class="fl-container revision_history fl-fix" id="revision_history_container"  style="display:none">
+				    
+				    <div class="revision_history_viewing">Viewing:</div>
+				    
+				    <div><select id="revision_history_list"></select></div>
+				    
+				    <div class="greybutton"><a href="javascript:;" class="button-default" id="revision_history_revert" >Use this Version</a></div>
+				    
+				    <div class="lightgreybutton"><a href="javascript:;" class="button-default" id="revision_history_cancel" >Cancel</a></div>
+				    
+				</div>
+				
+				<div class="site_tasks_container clearfix">
+					<h4>Conservation of free energy from carbohydrate catabolism</h4>
+					<div class="site_tasks_headers clearfix">
+						<div class="calendar_date_small clearfix">
+							<span class="calendar_date_month">nov</span>
+							<span class="calendar_date_day">09</span>
+						</div>
+						<div class="site_tasks_headers_text">
+							<span class="">Due: </span>
+							<span class="button-primary site_tasks_headers_text_due">10 Oct 2010</span>
+						</div>
+						<div class="site_tasks_headers_text">
+							<span class="site_tasks_headers_text_status">OPEN</span> for submissions: 
+							<span class="button-primary site_tasks_headers_text_remaining">28 days left</span>
+						</div>
+					</div>
+					
+					<h5>Description</h5>
+					<div class="site_task_extra_reading_material">
+						<h5>Extra reading material</h5>
+						<ul>
+							<li class="site_task_extra_reading_material_file"><img alt="" src="/dev/_images/page_word.png" /> Biology 101.doc</li>
+							<li class="site_task_extra_reading_material_url"><a href="http://www.newworldencyclopedia.org/entry/Photosynthesis" target="_blank">http://www.newworldencyclopedia.org/entry/Photosynthesis</a></li>
+							<li class="site_task_extra_reading_material_book">BERG J.M et. al (2006) Biochemistry (6th edition) ISBN..</li>
+						</ul>
+					</div>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non lacus at nisi ultricies vulputate. Proin orci est, fringilla in fermentum venenatis, bibendum sed nunc. Aliquam volutpat consequat libero, et lobortis velit posuere eget. Morbi dui elit, ornare eget accumsan nec, venenatis ac eros. Praesent condimentum, lorem vitae pretium tristique, libero purus cursus nulla, eget bibendum mauris lacus id mauris. Donec faucibus dignissim porta. Nam id risus turpis. Nulla et ipsum at est interdum interdum. Sed volutpat volutpat enim a blandit. Aliquam mollis cursus urna, a ullamcorper lorem sodales et. Phasellus a massa sapien. Ut tempus placerat est, ullamcorper mattis risus malesuada a. Aliquam odio justo, porta nec aliquet ut, viverra non sem.</p>
+					<p>Pellentesque euismod semper turpis, vel dictum mauris iaculis et. Nulla odio sem, iaculis nec fermentum id, vestibulum et quam. Nulla eleifend volutpat mi, vitae iaculis sapien mollis id. Phasellus rhoncus, lorem ac aliquet porttitor, tortor nulla eleifend orci, vitae tincidunt nibh neque nec nisi. Aenean sapien risus, adipiscing in egestas id, ultricies ut diam. Sed justo purus, pulvinar quis vulputate quis, pulvinar vel turpis. Proin luctus euismod venenatis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dignissim malesuada ornare. Donec id fringilla sapien. Maecenas eu lorem ipsum, a lobortis dolor. In sagittis gravida quam ut porttitor. In quis eros sit amet lacus venenatis suscipit in iaculis leo. Mauris eu ipsum ut nisl porta tristique. Nunc suscipit nulla nunc. Sed consectetur, augue sit amet faucibus viverra, leo felis tristique sem, ac tristique urna libero varius quam. Etiam ultricies urna a augue adipiscing vel mollis neque sagittis. </p>
+					<p>
+						<img id="widget_comments_id123" class="widget_inline" style="display:block; padding: 10px; margin: 4px" src="/devwidgets/discussion/images/discussion.png" border="1" alt="" />
+					</p>
+				</div>
+			    </div>
+			    <!-- BOTTOM BORDER -->
+			    <div class="content_bottom"><div class="content_bottom_inner"></div></div>
+			
+		    </div>
+		    
+	    </div>
+	</div>
+	
+<!-- FOOTER WIDGET -->
+<div id="widget_footer_footercontainer" class="widget_inline footercontainer"></div>
+		<script type="text/javascript" src="/dev/_javascript/site_tasks.js"></script>
+		
+    </body>
+</html>
