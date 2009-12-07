@@ -269,7 +269,7 @@ sakai.site_manage_members = function() {
             cache: false,
 			url: "/sites/" + selectedSite + ".members.json?sort=firstName,asc&start=" + start + "&items=" + pageSize,
             success: function(data) {
-                json.members = $.evalJSON(data);
+                json.members = $.evalJSON(data).results;
 				
                 //getSiteMembersData(searchTerm, page, splitChar);
 				 renderMembers(json.members,true);
