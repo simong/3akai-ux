@@ -149,6 +149,7 @@ sakai.chat = function(tuid, placement, showSettings){
 	var sitesFocus = false;
 	var sitesShown = false;
 	var time = [];
+	var pulltime = "2100-10-10T10:10:10.000Z";
 	
 	// JSON
 	var activewindows = {};
@@ -1081,7 +1082,7 @@ sakai.chat = function(tuid, placement, showSettings){
 				}
 				
 				json.contacts[i].name = parseName(json.contacts[i].userid, json.contacts[i].profile.firstName, json.contacts[i].profile.lastName);
-				json.contacts[i].photo = parsePicture(json.contacts[i].profile.picture, json.contacts[i].profile["rep:userId"][0]);
+				json.contacts[i].photo = parsePicture(json.contacts[i].profile.picture, json.contacts[i].profile["rep:userId"]);
 				json.contacts[i].statusmessage = parseStatusMessage(json.contacts[i].profile.basic);
 			
 				saveToAllFriends(json.contacts[i]);
@@ -1485,12 +1486,15 @@ sakai.chat = function(tuid, placement, showSettings){
 	 */
 	sakai.chat.checkNewMessages = function(){
 
+		var data = {};
+		if (time.length !== 0) {
+			data.t = time;
+		}
+
 		// Send an ajax request to check if there are any new messages
 		$.ajax({
 			url: Config.URL.CHAT_UPDATE_SERVICE,
-			data: {
-				t: time
-			},
+			data: data,
 			success: function(data){
 
 				// Parse the json data and get the time
@@ -1502,6 +1506,7 @@ sakai.chat = function(tuid, placement, showSettings){
 				}else {
 					setTimeout(sakai.chat.checkNewMessages, 5000);
 				}
+				pulltime = json.pulltime;
 			}
 		});
 	};
@@ -1550,7 +1555,8 @@ sakai.chat = function(tuid, placement, showSettings){
 			url: Config.URL.CHAT_GET_SERVICE.replace(/__KIND__/, para),
 			data: {
 				"_from" : tosend,
-				"items" : 1000
+				"items" : 1000,
+				"t" : pulltime
 			},
 			cache: false,
 			sendToLoginOnFail: true,
@@ -1564,10 +1570,10 @@ sakai.chat = function(tuid, placement, showSettings){
 					for(var i = json.results.length - 1; i >= 0; i--) {
 						var message = json.results[i];
 						var user = "";
-						if (message.userFrom["rep:userId"][0] === sdata.me.user.userid){
-							user = message.userTo["rep:userId"][0];
+						if (message.userFrom["rep:userId"] === sdata.me.user.userid){
+							user = message.userTo["rep:userId"]
 						} else {
-							user = message.userFrom["rep:userId"][0];
+							user = message.userFrom["rep:userId"];
 						}
 						var isIncluded = true;
 						if (hasNew){
@@ -1607,7 +1613,7 @@ sakai.chat = function(tuid, placement, showSettings){
 								
 								for(var j = 0; j < njson[i].messages.length; j++){
 									// Check if the message is from the current user or from the friend you are talking to
-									if (sdata.me.user.userid == njson[i].messages[j].userFrom["rep:userId"][0]) {
+									if (sdata.me.user.userid == njson[i].messages[j].userFrom["rep:userId"]) {
 										isMessageFromOtherUser = false;
 									}
 									else {
@@ -1676,7 +1682,7 @@ sakai.chat = function(tuid, placement, showSettings){
 									activewindows.items[index].userid = i;
 									activewindows.items[index].active = false;
 									var friendProfile = njson[i].messages[0].userFrom;
-									if (njson[i].messages[0].userFrom["rep:userId"][0] == sdata.me.user.userid){
+									if (njson[i].messages[0].userFrom["rep:userId"] == sdata.me.user.userid){
 										friendProfile = njson[i].messages[0].userTo;
 									}
 									
