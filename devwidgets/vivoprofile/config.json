@@ -1,0 +1,16 @@
+{
+    "enabled": true,
+    "hasSettings": true,
+    "i18n": {
+        "default": {
+            "bundle": "/devwidgets/vivoprofile/bundles/default.properties",
+            "name": "VIVO Profile",
+            "description": "Show the vivo profile of a user"
+        }
+    },
+    "id": "vivoprofile",
+    "personalportal": true,
+    "sakaidocs": true,
+    "type": "contrib",
+    "url": "/devwidgets/vivoprofile/vivoprofile.html"
+}

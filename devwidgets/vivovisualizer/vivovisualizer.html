@@ -1,0 +1,39 @@
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/devwidgets/vivovisualizer/css/vivovisualizer.css" />
+
+<!-- WIDGET CONTENT CONTAINER -->
+<div class="vivovisualizer_widget">
+
+
+    <!-- MAIN VIEW -->
+    <div id="vivovisualizer_main" style="display:none;">
+        <div id="vivovisualizer_visualization_coauthornetwork" style="display:none;">
+            <h2>Co-Author Network</h2>
+            <embed src="http://vivo.example.com/vivo/images/visualization/coauthorship/EgoCentric.swf" flashvars="" width="600" height="850" align="top" id="vivovisualizer_visualization_coauthornetwork_vis" quality="high" bgcolor="#ffffff" name="EgoCentric" allowscriptaccess="sameDomain" pluginspage="http://www.adobe.com/go/getflashplayer" type="application/x-shockwave-flash">
+        </div>
+        <div id="vivovisualizer_visualization_coinvestigatornetwork" style="display:none;">
+            <h2>Co-Investigator Network</h2>
+            <embed src="http://localhost:7000/vivo/images/visualization/coauthorship/EgoCentric.swf" flashvars="" width="600" height="850" align="top" id="vivovisualizer_visualization_coinvestigatornetwork_vis" quality="high" bgcolor="#ffffff" name="EgoCentric" allowscriptaccess="sameDomain" pluginspage="http://www.adobe.com/go/getflashplayer" type="application/x-shockwave-flash">
+        </div>
+    </div>
+
+
+    <!-- SETTINGS VIEW -->
+    <div id="vivovisualizer_settings" style="display:none;">
+        <form id="vivovisualizer_settings_form" action="#">
+            <fieldset id="vivovisualizer_settings_visualizations">
+                <legend>What visualizations should be enabled in this widget?</legend>
+                <input type="checkbox" id="vivovisualizer_settings_coauthornetwork" name="vivovisualizer_settings_coauthornetwork" /> <label for="vivovisualizer_settings_coauthornetwork">Co-Author Network</label> <br />
+                <input type="checkbox" id="vivovisualizer_settings_coinvestigatornetwork" name="vivovisualizer_settings_coinvestigatornetwork" /> <label for="vivovisualizer_settings_coinvestigatornetwork">Co-Investigator Network</label> <br />
+            </fieldset>
+            <div class="fl-force-right">
+                <button type="button" class="s3d-button s3d-link-button" id="vivovisualizer_cancel_settings">__MSG__CANCEL__</button>
+                <button type="submit" class="s3d-button s3d-overlay-button">__MSG__SAVE__</button>
+            </div>
+            <hr class="fl-hidden fl-push"/>
+        </form>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script type="text/javascript" src="/devwidgets/vivovisualizer/javascript/vivovisualizer.js"></script>

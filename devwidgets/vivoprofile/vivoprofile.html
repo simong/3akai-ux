@@ -1,0 +1,87 @@
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="/devwidgets/vivoprofile/css/vivoprofile.css" />
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/static/modules/gviz/1.0/imagesparkline/imagesparkline.css" />
+
+
+
+
+<!-- WIDGET CONTENT CONTAINER -->
+<div class="vivoprofile_widget">
+    <!-- MAIN VIEW -->
+    <div id="vivoprofile_main" style="display:none;">
+        
+        <div id="vivoprofile_container">
+            <div id="vivoprofile_body"></div>
+        </div>
+
+        <div id="vivoprofile_template" style="display:none"><!--
+        <h2>${basic.firstName|default:""} ${basic.lastName|default:""}</h2>
+        {if contact}
+        <h3>Contact information</h3>
+        <ul class="vivoprofile_profile_data">
+            {if contact.primary_email}
+                <li><img src="/devwidgets/vivoprofile/images/mail.png" alt="email icon" class="contact_icon" /> ${contact.primary_email}</li>
+            {/if}
+            {if contact.phone}
+
+                {for nr in contact.phone}
+                    <li><img src="/devwidgets/vivoprofile/images/phone.png" alt="email icon" class="contact_icon" /> ${nr}</li>
+                {/for}
+            {/if}
+        </ul>
+        {/if}
+        {if affiliation && affiliation.positions && affiliation.positions.length > 0}
+            <br /><br />
+            <h3>Positions</h3>
+            <ul class="vivoprofile_profile_data">
+                {for pos in affiliation.positions}
+                    <li>${pos.title} at <a href="${pos.organization_uri}" target="_blank">${pos.organization}</a></li>
+                {/for}
+            </li>
+        {/if}
+        {if publications && publications.selected_publications}
+            <br /><br />
+            <h3>Publications</h3>
+            <div class="vivoprofile_profile_data">
+                {for publication in publications.selected_publications}
+                    <p>
+                        <a href="http://localhost:7000${publication.uri}" target="_blank">${publication.title}</a>
+                        {if publication.journal}
+                            <em>${publication.journal}</em> vol. ${publication.volume}, pg. ${publication.startpage}-${publication.endpage}
+                        {/if}
+                        | ${publication.type}
+                    </p>
+                {/for}
+            </div>
+        {/if}
+
+        <div id="vivo_profile_visualization"></div>
+    --></div>
+
+
+        
+
+
+    </div>
+    <!-- SETTINGS VIEW -->
+    <div id="vivoprofile_settings" style="display:none;">
+        <form id="vivoprofile_settings_form" action="#">
+            <p>__MSG__COLOR_TO_USE__:
+                <select id="vivoprofile_color">
+                    <option value="#000000">__MSG__BLACK__</option>
+                    <option value="#FF0000">__MSG__RED__</option>
+                    <option value="#00FF00">__MSG__GREEN__</option>
+                    <option value="#0000FF">__MSG__BLUE__</option>
+                </select>
+            </p>
+            <div class="fl-force-right">
+                <button type="button" class="s3d-button s3d-link-button" id="vivoprofile_cancel_settings">__MSG__CANCEL__</button>
+                <button type="submit" class="s3d-button s3d-overlay-button">__MSG__SAVE__</button>
+            </div>
+            <hr class="fl-hidden fl-push"/>
+        </form>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script type="text/javascript" src="/devwidgets/vivoprofile/javascript/vivoprofile.js"></script>

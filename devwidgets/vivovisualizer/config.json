@@ -1,0 +1,16 @@
+{
+    "enabled": true,
+    "hasSettings": true,
+    "i18n": {
+        "default": {
+            "bundle": "/devwidgets/vivovisualizer/bundles/default.properties",
+            "name": "VIVO Visualizer",
+            "description": "Visualize all your VIVO data!"
+        }
+    },
+    "id": "vivovisualizer",
+    "personalportal": true,
+    "sakaidocs": true,
+    "type": "contrib",
+    "url": "/devwidgets/vivovisualizer/vivovisualizer.html"
+}
