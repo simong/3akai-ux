@@ -546,4 +546,61 @@ define(['exports', 'jquery', 'underscore', 'oae/api/oae.api.config', 'oae/api/oa
         // Load the widget
         loadWidgets($container, showSettings, widgetDataToPassIn, callback);
     };
+
+    /**
+     * Save the preference settings or data for a widget.
+     *
+     * @param  {String}     id              The unique id of the widget
+     * @param  {Object}     data            A JSON object that contains the data for the widget
+     * @param  {Boolean}    [overwrite]     If we should replace the entire tree of saved data or just update it
+     * @param  {Function}   [callback]      Optional callback function that gets executed after the save is complete
+     * @param  {Object}     [callback.err]  Error containing the error code and message
+     * @throws {Error}                      Error thrown when no widget ID or data object is provided.
+     */
+    var saveData = exports.saveWidgetData = function(id, data, overwrite, callback) {
+        if (!id || !data || !_.isObject(data)) {
+            throw new Error('A valid widget id and data should be provided');
+        }
+
+        callback = callback || function() {};
+        overwrite = overwrite || false;
+        var data = JSON.stringify(data);
+        $.ajax({
+            'url': '/api/widgets/' + id,
+            'type': 'POST',
+            'data': {
+                'data': data,
+                'overwrite': overwrite
+            },
+            'success': function() {
+                callback(null);
+            },
+            'error': function(jqXHR, textStatus) {
+                callback({'code': jqXHR.status, 'msg': jqXHR.statusText});
+            }
+        });
+    };
+
+    /**
+     * Load the preference settings or data for a widget.
+     *
+     * @param  {String}     id              The unique id of the widget
+     * @param  {Function}   callback        Callback function that gets executed after the load is complete
+     * @param  {Object}     callback.err    Error containing the error code and message
+     * @throws {Error}                      Error thrown when no widget ID is provided.
+     */
+    var loadWidgetData = exports.loadWidgetData = function(id, callback) {
+        if (!id) {
+            throw new Error('A valid widget id should be provided');
+        }
+        $.ajax({
+            'url': '/api/widgets/' + id,
+            'success': function(data) {
+                callback(null, data);
+            },
+            'error': function(jqXHR, textStatus) {
+                callback({'code': jqXHR.status, 'msg': jqXHR.statusText});
+            }
+        });
+    };
 });
