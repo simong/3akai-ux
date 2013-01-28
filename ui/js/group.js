@@ -196,6 +196,10 @@ require(['jquery', 'oae/api/oae.core'], function($, oae) {
         $(document).on('click', '.oae-list-item-right', function() {
             $(this).parent().toggleClass('active');
         });
+
+        $(document).on('click', '.oae-entity-picture', function() {
+            $('body').trigger('init.changepic.sakai', {'type': 'group', 'data': groupProfile});
+        });
     };
 
     // List to the left hand navigation ready event for navigation rendering
