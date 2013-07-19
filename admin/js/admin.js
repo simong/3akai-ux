@@ -59,7 +59,8 @@ require(['jquery', 'underscore', 'oae.core', '/admin/js/admin.util.js', 'jquery.
             }
         }, {
             'tooltip': 'Click to edit name',
-            'select' : true
+            'select' : true,
+            'onblur': 'submit'
         });
     };
 
