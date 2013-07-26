@@ -6,18 +6,20 @@ casper.test.comment('Admin - Tenants');
  * @param  {String}    tenantID    The ID of the tenant to be deleted
  */
 var verifyDeleteTenant = function(tenantID) {
-    casper.test.assertExists('.delete-tenant[data-alias="' + tenantID + '"]', 'The \'Delete\' button is present');
-    casper.click('.delete-tenant[data-alias="' + tenantID + '"]');
+    casper.waitForSelector('.delete-tenant[data-alias="' + tenantID + '"]', function() {
+        casper.test.assertExists('.delete-tenant[data-alias="' + tenantID + '"]', 'The \'Delete\' button is present');
+        casper.click('.delete-tenant[data-alias="' + tenantID + '"]');
 
-    // Wait for the confirmation modal to show
-    casper.waitForSelector('#admin-confirmation-container #deletetenant-modal.in', function() {
-        casper.test.assertExists('#admin-confirmation-container #deletetenant-modal.in', 'A confirmation modal shows to confirm stopping the tenant');
-        // Confirm starting the tenant
-        casper.test.assertExists('#deletetenant-modal-confirm', 'The \'Yes, delete "' + tenantID + '"\' button is present');
-        casper.click('#deletetenant-modal-confirm');
-        casper.waitForSelector('#oae-notification-container .alert', function() {
-            casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'Tenant ' + tenantID + ' was successfully deleted');
-            casper.click('#oae-notification-container .close');
+        // Wait for the confirmation modal to show
+        casper.waitForSelector('#admin-confirmation-container #deletetenant-modal.in', function() {
+            casper.test.assertExists('#admin-confirmation-container #deletetenant-modal.in', 'A confirmation modal shows to confirm stopping the tenant');
+            // Confirm starting the tenant
+            casper.test.assertExists('#deletetenant-modal-confirm', 'The \'Yes, delete "' + tenantID + '"\' button is present');
+            casper.click('#deletetenant-modal-confirm');
+            casper.waitForSelector('#oae-notification-container .alert', function() {
+                casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'Tenant ' + tenantID + ' was successfully deleted');
+                casper.click('#oae-notification-container .close');
+            });
         });
     });
 };
@@ -28,18 +30,20 @@ var verifyDeleteTenant = function(tenantID) {
  * @param  {String}    tenantID    The ID of the tenant to be started
  */
 var verifyStartTenant = function(tenantID) {
-    casper.test.assertExists('.start-tenant[data-alias="' + tenantID + '"]', 'The \'Start\' button is present');
-    casper.click('.start-tenant[data-alias="' + tenantID + '"]');
+    casper.waitForSelector('.start-tenant[data-alias="' + tenantID + '"]', function() {
+        casper.test.assertExists('.start-tenant[data-alias="' + tenantID + '"]', 'The \'Start\' button is present');
+        casper.click('.start-tenant[data-alias="' + tenantID + '"]');
 
-    // Wait for the confirmation modal to show
-    casper.waitForSelector('#admin-confirmation-container #starttenant-modal.in', function() {
-        casper.test.assertExists('#admin-confirmation-container #starttenant-modal.in', 'A confirmation modal shows to confirm stopping the tenant');
-        // Confirm starting the tenant
-        casper.test.assertExists('#starttenant-modal-confirm', 'The \'Yes, start "' + tenantID + '"\' button is present');
-        casper.click('#starttenant-modal-confirm');
-        casper.waitForSelector('#oae-notification-container .alert', function() {
-            casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'Tenant ' + tenantID + ' was successfully started');
-            casper.click('#oae-notification-container .close');
+        // Wait for the confirmation modal to show
+        casper.waitForSelector('#admin-confirmation-container #starttenant-modal.in', function() {
+            casper.test.assertExists('#admin-confirmation-container #starttenant-modal.in', 'A confirmation modal shows to confirm stopping the tenant');
+            // Confirm starting the tenant
+            casper.test.assertExists('#starttenant-modal-confirm', 'The \'Yes, start "' + tenantID + '"\' button is present');
+            casper.click('#starttenant-modal-confirm');
+            casper.waitForSelector('#oae-notification-container .alert', function() {
+                casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'Tenant ' + tenantID + ' was successfully started');
+                casper.click('#oae-notification-container .close');
+            });
         });
     });
 };
@@ -50,18 +54,19 @@ var verifyStartTenant = function(tenantID) {
  * @param  {String}    tenantID    The ID of the tenant to be stopped
  */
 var verifyStopTenant = function(tenantID) {
-    casper.test.assertExists('.stop-tenant[data-alias="' + tenantID + '"]', 'The \'Stop\' button is present');
-    casper.click('.stop-tenant[data-alias="' + tenantID + '"]');
-
-    // Wait for the confirmation modal to show
-    casper.waitForSelector('#admin-confirmation-container #stoptenant-modal.in', function() {
-        casper.test.assertExists('#admin-confirmation-container #stoptenant-modal.in', 'A confirmation modal shows to confirm stopping the tenant');
-        // Confirm stopping the tenant
-        casper.test.assertExists('#stoptenant-modal-confirm', 'The \'Yes, stop "' + tenantID + '"\' button is present');
-        casper.click('#stoptenant-modal-confirm');
-        casper.waitForSelector('#oae-notification-container .alert', function() {
-            casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'Tenant ' + tenantID + ' was successfully stopped');
-            casper.click('#oae-notification-container .close');
+    casper.waitForSelector('.stop-tenant[data-alias="' + tenantID + '"]', function() {
+        casper.test.assertExists('.stop-tenant[data-alias="' + tenantID + '"]', 'The \'Stop\' button is present');
+        casper.click('.stop-tenant[data-alias="' + tenantID + '"]');
+        // Wait for the confirmation modal to show
+        casper.waitForSelector('#admin-confirmation-container #stoptenant-modal.in', function() {
+            casper.test.assertExists('#admin-confirmation-container #stoptenant-modal.in', 'A confirmation modal shows to confirm stopping the tenant');
+            // Confirm stopping the tenant
+            casper.test.assertExists('#stoptenant-modal-confirm', 'The \'Yes, stop "' + tenantID + '"\' button is present');
+            casper.click('#stoptenant-modal-confirm');
+            casper.waitForSelector('#oae-notification-container .alert', function() {
+                casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'Tenant ' + tenantID + ' was successfully stopped');
+                casper.click('#oae-notification-container .close');
+            });
         });
     });
 };
@@ -72,16 +77,18 @@ var verifyStopTenant = function(tenantID) {
  * @param  {String}    tenantID    The ID of the tenant to be renamed
  */
 var verifyRenameTenant = function(tenantID) {
-    casper.test.assertExists('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]', 'The editable tenant name field is present');
-    casper.click('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]');
-    // Submit the form
-    casper.test.assertExists('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"] form', 'The tenant name form is present after click');
-    casper.fill('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"] form', {
-        'value': 'New tenant name'
-    }, false);
-    casper.click('html');
     casper.waitForSelector('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]', function() {
-        casper.test.assertSelectorHasText('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]', 'New tenant name', 'The tenant name has been successfully changed');
+        casper.test.assertExists('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]', 'The editable tenant name field is present');
+        casper.click('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]');
+        // Submit the form
+        casper.test.assertExists('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"] form', 'The tenant name form is present after click');
+        casper.fill('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"] form', {
+            'value': 'New tenant name'
+        }, false);
+        casper.click('html');
+        casper.waitForSelector('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]', function() {
+            casper.test.assertSelectorHasText('.jeditable-container .jeditable-field[data-alias="' + tenantID + '"]', 'New tenant name', 'The tenant name has been successfully changed');
+        });
     });
 };
 
@@ -92,21 +99,23 @@ var verifyRenameTenant = function(tenantID) {
  * @param  {String}     callback.tenantID   The ID of the created tenant
  */
 var verifyCreateNewTenant = function(callback) {
-    var tenantID = mainUtil().generateRandomString();
-    casper.test.assertExists('form#createtenant-form', 'The create tenant form is present');
-    // Try submitting an empty form
-    casper.fill('form#createtenant-form', {
-        'alias': tenantID,
-        'displayName': tenantID + ' Tenant',
-        'host': tenantID + '.oae.com'
-    }, false);
-    // Submit the form
-    casper.click('#createtenant-submit-button');
-    // Verify that creating the tenant worked
-    casper.waitForSelector('#oae-notification-container .alert', function() {
-        casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'New tenant ' + tenantID + ' successfully created');
-        casper.click('#oae-notification-container .close');
-        callback(tenantID);
+    casper.waitForSelector('form#createtenant-form', function() {
+        var tenantID = mainUtil().generateRandomString();
+        casper.test.assertExists('form#createtenant-form', 'The create tenant form is present');
+        // Try submitting an empty form
+        casper.fill('form#createtenant-form', {
+            'alias': tenantID,
+            'displayName': tenantID + ' Tenant',
+            'host': tenantID + '.oae.com'
+        }, false);
+        // Submit the form
+        casper.click('#createtenant-submit-button');
+        // Verify that creating the tenant worked
+        casper.waitForSelector('#oae-notification-container .alert', function() {
+            casper.test.assertDoesntExist('#oae-notification-container .alert.alert-error', 'New tenant ' + tenantID + ' successfully created');
+            casper.click('#oae-notification-container .close');
+            callback(tenantID);
+        });
     });
 };
 

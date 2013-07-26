@@ -58,8 +58,10 @@ casper.start('http://admin.oae.com', function() {
     casper.then(function() {
         casper.echo('Verify logging in to the administration interface', 'INFO');
         userUtil().doAdminLogIn('administrator', 'administrator');
-        casper.waitForSelector('#admin-lhnav-container ul', function() {
-            casper.test.assertExists('#admin-header-user', 'Successfully logged in to the administration interface');
+        casper.then(function() {
+            casper.waitForSelector('#admin-lhnav-container ul', function() {
+                casper.test.assertExists('#admin-header-user', 'Successfully logged in to the administration interface');
+            });
         });
     });
 

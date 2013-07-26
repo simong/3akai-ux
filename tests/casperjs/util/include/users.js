@@ -113,6 +113,7 @@ var userUtil = function() {
         casper.then(function() {
             casper.echo('Log out');
             casper.click('#admin-header-user-logout');
+            casper.wait(2000);
         });
     };
 
