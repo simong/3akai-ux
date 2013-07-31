@@ -40,6 +40,7 @@ require(['jquery','oae.core'], function($, oae) {
                             'id': 'activity',
                             'settings': {
                                 'principalId': oae.data.me.id,
+                                'signature': oae.data.me.signature,
                                 'canManage': true
                             }
                         }

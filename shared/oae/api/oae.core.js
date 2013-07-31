@@ -45,6 +45,7 @@ define([
         'oae.api.profile',
         'oae.api.user',
         'oae.api.util',
+        'oae.api.websockets',
         'oae.api.widget',
 
         /**
@@ -75,6 +76,7 @@ define([
         'jquery.timeago',
         'jquery.validate',
         'jquery-ui',
+        'sockjs',
         'underscore'
     ],
 

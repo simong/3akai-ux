@@ -280,9 +280,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * @param  {Object}       items       Array of items to be prepended
          */
         var prependItems = function(items) {
-            processList({
-                'results': items
-            }, true);
+            processList(items, true);
         };
 
         /**

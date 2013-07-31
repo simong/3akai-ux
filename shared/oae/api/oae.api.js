@@ -22,9 +22,9 @@
  * on `oae.core`, which invokes this plugin, and also efficiently pre-loads many third-party dependencies.
  */
 define(['oae.api.authentication', 'oae.api.config', 'oae.api.content', 'oae.api.comment', 'oae.api.discussion', 'oae.api.follow',
-        'oae.api.group', 'oae.api.i18n', 'oae.api.l10n', 'oae.api.profile', 'oae.api.user', 'oae.api.util', 'oae.api.widget'],
+        'oae.api.group', 'oae.api.i18n', 'oae.api.l10n', 'oae.api.profile', 'oae.api.user', 'oae.api.util', 'oae.api.websockets', 'oae.api.widget'],
 
-    function(authenticationAPI, configAPI, contentAPI, commentAPI, discussionAPI, followAPI, groupAPI, i18nAPI, l10nAPI, profileAPI, userAPI, utilAPI, widgetAPI) {
+    function(authenticationAPI, configAPI, contentAPI, commentAPI, discussionAPI, followAPI, groupAPI, i18nAPI, l10nAPI, profileAPI, userAPI, utilAPI, websocketsAPI, widgetAPI) {
 
         /*!
          * Object containing all of the available OAE API modules and their functions, as well as some
@@ -44,6 +44,7 @@ define(['oae.api.authentication', 'oae.api.config', 'oae.api.content', 'oae.api.
                 'profile': profileAPI,
                 'user': userAPI,
                 'util': utilAPI,
+                'websockets': websocketsAPI,
                 'widget': widgetAPI
             },
             'data': {}
@@ -108,6 +109,13 @@ define(['oae.api.authentication', 'oae.api.config', 'oae.api.content', 'oae.api.
                                         // We can show the body as internationalization and
                                         // initial widget loading have finished
                                         $('body').show();
+                                    });
+
+
+                                    oae.api.websockets.init(oae.data.me, function(err) {
+                                        if (err) {
+                                            throw new Error('Could not setup websocket');
+                                        }
                                     });
                                 });
                             });

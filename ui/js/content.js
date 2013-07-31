@@ -53,6 +53,8 @@ require(['jquery', 'underscore', 'oae.core'], function($, _, oae) {
             setUpContentPreview();
             // Set up the context event exchange
             setUpContext();
+            // Set up the push notifications
+            setUpPushNotifications();
             // We can now unhide the page
             oae.api.util.showPage();
         });
@@ -253,6 +255,26 @@ require(['jquery', 'underscore', 'oae.core'], function($, _, oae) {
         }
     });
 
+    var setUpPushNotifications = function() {
+        // Express we're interested in push messages for the content feed
+        oae.api.websockets.subscribe(contentProfile.id, 'activity', contentProfile.signature);
+        oae.api.websockets.subscribe(contentProfile.id, 'message', contentProfile.signature);
+
+        // Listen for Push messages.
+        $(document).on('push.oae.content.' + contentProfile.id, function(ev, message) {
+            if (message.name === 'content-update' || message.name === 'content-update-visibility') {
+                contentProfile = message.data.content;
+
+                // Re-render the clip
+                setUpClips();
+
+                // Re-set the page title
+                oae.api.util.setBrowserTitle(contentProfile.displayName);
+            } else if (message.name === 'content-comment' && message.user.id !== oae.data.me.id) {
+                oae.api.util.notification('', message.user.displayName + ' made a new comment');
+            }
+        });
+    };
 
     getContentProfile();
 

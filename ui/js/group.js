@@ -116,6 +116,7 @@ require(['jquery', 'oae.core'], function($, oae) {
                                 'id': 'activity',
                                 'settings': {
                                     'principalId': groupProfile.id,
+                                    'signature': groupProfile.signature,
                                     'canManage': groupProfile.isManager
                                 }
                             }

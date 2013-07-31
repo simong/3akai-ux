@@ -47,6 +47,7 @@ requirejs.config({
         'markdown': 'vendor/js/markdown',
         'qunitjs': 'vendor/js/qunit',
         'text': 'vendor/js/requirejs/require.text',
+        'sockjs': 'vendor/js/sockjs',
         'trimpath': 'vendor/js/trimpath',
         'underscore': 'vendor/js/underscore',
 
@@ -75,6 +76,7 @@ requirejs.config({
         'oae.api.profile': 'oae/api/oae.api.profile',
         'oae.api.user': 'oae/api/oae.api.user',
         'oae.api.util': 'oae/api/oae.api.util',
+        'oae.api.websockets': 'oae/api/oae.api.websockets',
         'oae.api.widget': 'oae/api/oae.api.widget',
         'oae.bootstrap': 'oae/api/oae.bootstrap',
         'oae.core': 'oae/api/oae.core',
