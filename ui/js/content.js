@@ -261,8 +261,9 @@ require(['jquery', 'underscore', 'oae.core'], function($, _, oae) {
         oae.api.websockets.subscribe(contentProfile.id, 'message', contentProfile.signature);
 
         // Listen for Push messages.
-        $(document).on('push.oae.content.' + contentProfile.id, function(ev, message) {
-            if (message.name === 'content-update' || message.name === 'content-update-visibility') {
+        $(document).on('push.' + contentProfile.id + '#activity', function(ev, activity) {
+            if (activity['oae:activityType'] === 'content-update' || activity['oae:activityType'] === 'content-update-visibility') {
+                // FIXME: Either the backend needs to return the content object or we need to do a mini mapping
                 contentProfile = message.data.content;
 
                 // Re-render the clip

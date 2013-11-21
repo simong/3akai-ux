@@ -78,8 +78,8 @@ define(['exports', 'jquery', 'underscore', 'sockjs'], function(exports, $, _) {
 
             console.log(msg);
 
-            if (msg.channel) {
-                $(document).trigger('push.' + msg.channel.name, msg.event);
+            if (msg.stream) {
+                $(document).trigger('push.' + msg.stream, msg.activity);
             } else {
                 $(document).trigger('websockets.internal.' + msg.id, msg);
             }
