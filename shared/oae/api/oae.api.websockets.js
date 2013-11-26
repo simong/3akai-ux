@@ -79,7 +79,7 @@ define(['exports', 'jquery', 'underscore', 'sockjs'], function(exports, $, _) {
             console.log(msg);
 
             if (msg.stream) {
-                $(document).trigger('push.' + msg.stream, msg.activity);
+                $(document).trigger('push.' + msg.resourceId + '#' + msg.streamType, msg.activity);
             } else {
                 $(document).trigger('websockets.internal.' + msg.id, msg);
             }
