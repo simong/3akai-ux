@@ -39,7 +39,7 @@ require(['jquery','oae.core'], function($, oae) {
                         {
                             'id': 'activity',
                             'settings': {
-                                'principalId': oae.data.me.id,
+                                'context': oae.data.me,
                                 'canManage': true
                             }
                         }
@@ -58,7 +58,7 @@ require(['jquery','oae.core'], function($, oae) {
                         {
                             'id': 'contentlibrary',
                             'settings': {
-                                'principalId': oae.data.me.id,
+                                'context': oae.data.me,
                                 'canManage': true
                             }
                         }
@@ -77,7 +77,7 @@ require(['jquery','oae.core'], function($, oae) {
                         {
                             'id': 'discussionslibrary',
                             'settings': {
-                                'principalId': oae.data.me.id,
+                                'context': oae.data.me,
                                 'canManage': true
                             }
                         }
@@ -96,7 +96,7 @@ require(['jquery','oae.core'], function($, oae) {
                         {
                             'id': 'memberships',
                             'settings': {
-                                'principalId': oae.data.me.id,
+                                'context': oae.data.me,
                                 'canManage': true
                             }
                         }
