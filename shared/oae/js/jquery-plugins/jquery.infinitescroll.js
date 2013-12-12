@@ -167,6 +167,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * @param  {Boolean}     [prepend]    `true` when we want to prepend the new items to the list, `false` when we want to append the new items to the list
          */
         var processList = function(data, prepend) {
+            console.log(data);
             if (options.postProcessor) {
                 data = options.postProcessor(data);
             }
@@ -219,7 +220,8 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
 
                 if (prepend) {
                     // Prepend the HTML
-                    $listContainer.prepend(templateOutput);
+                    $($.trim(templateOutput)).hide().prependTo($listContainer).fadeIn('slow');
+//                    $listContainer.prepend().hide().toggle('slide');
                 } else {
                     $listContainer.append(templateOutput);
                 }
@@ -278,11 +280,10 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * to be used
          *
          * @param  {Object}       items       Array of items to be prepended
+         * TODO
          */
         var prependItems = function(items) {
-            processList({
-                'results': items
-            }, true);
+            processList(items, true);
         };
 
         /**

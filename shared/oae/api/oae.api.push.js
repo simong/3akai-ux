@@ -15,6 +15,12 @@
 
 define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(exports, $, _, utilAPI) {
 
+    // Constant that TODO
+    var AGGREGATION_RULES = {
+        'content-create': ['actor'],
+        'content-share': ['actor', 'target']
+    }
+
     // Variable that keeps track of whether or not the websocket has been
     // initialized, connected and authenticated successfully
     var connected = false;
@@ -33,13 +39,29 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
 
     // Variable that keeps track of the message callback functions that have registered for messages
     // on a specific channel with a specific stream type. When such a message comes in, all of these
-    // message callback functions need to be called
+    // message callback functions need to be called.
+    // The message callbacks for the subscriptions will be stored in the following way:
+    //
+    //   {
+    //      '<channel>': {
+    //          '<streamType>': [
+    //              <messageCallback1>,
+    //              <messageCallback2>
+    //          ],
+    //          ...
+    //      },
+    //      ...
+    //   }
     var subscriptions = {};
+
+    // TODO
+    var aggregates = {};
 
     /**
      * Initialize all push notification functionality by establishing the websocket connection
      * and authenticating. SockJS is used to provide a cross-browser and cross-domain communication
      * channel between the browser and the server (@see https://github.com/sockjs)
+     * TODO: Document that activities are always returned
      *
      * @param  {Boolean}    anon          Whether or not the user is currently authenticated
      * @param  {Function}   callback      Standard callback function
@@ -113,11 +135,16 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         // The message is a proper push notification. In this case, we notify all places
         // that have subscribed to the channel the event was sent over and the associated stream type
         if (message.resourceId && message.streamType) {
-            if (subscriptions[resourceId][streamType]) {
-                _.each(subscriptions[resourceId][streamType], function(messageCallback) {
-                    messageCallback(msg.activity);
-                });
+
+            // TODO
+            // Aggregate content creation / content sharing / link adding / link sharing
+            var activityType = message.activity['oae:activityType'];
+            if (activityType && aggregationRules[activityType]) {
+                aggregateMessages(message);
+            } else {
+                notifySubscribers(message);
             }
+
         // The message is an acknowledgement message. In this case, the original message's
         // acknowledgement callback function is executed
         } else {
@@ -125,6 +152,56 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
                 acknowledgementCallbacks[message.id](message);
             }
         }
+    };
+
+    /**
+     * TODO
+     */
+    var aggregateMessages = function(message) {
+        // Check if there already is an active aggregate
+        var activityType = message.activity['oae:activityType'];
+        aggregates[activityType] = aggregates[activityType] || {};
+
+        // TOOD
+        var aggregateKey = [];
+        _.each(aggregationRules[activityType], function(aggregationRule) {
+            aggregateKey.push(message.activity[aggregationRule]['oae:id']);
+        });
+        aggregateKey = aggregateKey.join('#');
+
+        // TODO
+        if (aggregates[activityType][aggregateKey]) {
+            clearTimeout(aggregates[activityType][aggregateKey].timeout);
+
+            var previousMessage = aggregates[activityType][aggregateKey].message;
+            console.log(aggregates[activityType][aggregateKey]);
+            var aggregateField = _.find(['actor', 'object', 'target'], function(type) {
+                return !_.contains(aggregationRules[activityType], type);
+            });
+
+            // TODO
+            if (previousMessage.activity[aggregateField]['oae:collection']) {
+                previousMessage.activity[aggregateField]['oae:collection'].push(message.activity[aggregateField]);
+            // TODO
+            } else {
+                previousMessage.activity[aggregateField] = {
+                    'oae:collection': [previousMessage.activity[aggregateField], message.activity[aggregateField]],
+                    'objectType': 'collection'
+                };
+            }
+            // TODO
+            previousMessage.activity.published = message.activity.published;
+
+            message = previousMessage;
+        }
+
+        // TODO
+        aggregates[activityType][aggregateKey] = {};
+        aggregates[activityType][aggregateKey].message = message;
+        aggregates[activityType][aggregateKey].timeout = setTimeout(function() {
+            notifySubscribers(aggregates[activityType][aggregateKey].message);
+            //delete aggregates[activityType][aggregateKey];
+        }, 1000);
     };
 
     /**
@@ -201,6 +278,17 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         // Subscribe straight away when the websocket has already been successfully established
         } else {
             sendMessage(name, payload, callback);
+        }
+    };
+
+    /**
+     * TODO
+     */
+    var notifySubscribers = function(message) {
+        if (subscriptions[message.resourceId] && subscriptions[message.resourceId][message.streamType]) {
+            _.each(subscriptions[message.resourceId][message.streamType], function(messageCallback) {
+                messageCallback(message.activity);
+            });
         }
     };
 
