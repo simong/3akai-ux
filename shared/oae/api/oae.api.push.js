@@ -15,7 +15,14 @@
 
 define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(exports, $, _, utilAPI) {
 
-    // Constant that TODO
+    // Constant that defines the rules that should be followed for aggregating incoming activities.
+    // All incoming push notifications will be formatted as activities following the activitystrea.ms
+    // specification (@see http://activitystrea.ms). As all push notifications will come in as individual
+    // activities, there is a need to do some basic aggregation (e.g. otherwise uploading multiple files
+    // at the same time would generate individual activities in recent activity). Each aggregation rule is
+    // defined for a certain activity type. The aggregation rules define the fields of the activity that
+    // should match with those fields on a different activity before both activities can be aggregated into
+    // one activity
     var AGGREGATION_RULES = {
         'content-create': ['actor'],
         'content-share': ['actor', 'target']
@@ -61,7 +68,6 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      * Initialize all push notification functionality by establishing the websocket connection
      * and authenticating. SockJS is used to provide a cross-browser and cross-domain communication
      * channel between the browser and the server (@see https://github.com/sockjs)
-     * TODO: Document that activities are always returned
      *
      * @param  {Boolean}    anon          Whether or not the user is currently authenticated
      * @param  {Function}   callback      Standard callback function
@@ -121,6 +127,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      *
      * @param  {Object}         ev        Received SockJS event
      * @throws {Error}                    Error thrown when the incoming message could not be parsed
+     * @api private
      */
     var incomingMessage = function(ev) {
         // Parse the incoming message
@@ -130,16 +137,15 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         } catch (err) {
             throw new Error('Could not parse incoming websocket message');
         }
-        console.log(message);
 
         // The message is a proper push notification. In this case, we notify all places
         // that have subscribed to the channel the event was sent over and the associated stream type
         if (message.resourceId && message.streamType) {
 
-            // TODO
-            // Aggregate content creation / content sharing / link adding / link sharing
+            // Check if the activity that is associated to the push notification requires
+            // aggregation. If it doesn't, it can be distributed to its subscribers straight away
             var activityType = message.activity['oae:activityType'];
-            if (activityType && aggregationRules[activityType]) {
+            if (activityType && AGGREGATION_RULES[activityType]) {
                 aggregateMessages(message);
             } else {
                 notifySubscribers(message);
@@ -156,7 +162,12 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
 
     /**
      * TODO
+     *
+     * @api private
      */
+
+    aggregates[<activityType>][<aggregateKey>] = {'timeout': <callback>, 'message': <message>}
+
     var aggregateMessages = function(message) {
         // Check if there already is an active aggregate
         var activityType = message.activity['oae:activityType'];
@@ -164,7 +175,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
 
         // TOOD
         var aggregateKey = [];
-        _.each(aggregationRules[activityType], function(aggregationRule) {
+        _.each(AGGREGATION_RULES[activityType], function(aggregationRule) {
             aggregateKey.push(message.activity[aggregationRule]['oae:id']);
         });
         aggregateKey = aggregateKey.join('#');
@@ -174,9 +185,8 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
             clearTimeout(aggregates[activityType][aggregateKey].timeout);
 
             var previousMessage = aggregates[activityType][aggregateKey].message;
-            console.log(aggregates[activityType][aggregateKey]);
             var aggregateField = _.find(['actor', 'object', 'target'], function(type) {
-                return !_.contains(aggregationRules[activityType], type);
+                return !_.contains(AGGREGATION_RULES[activityType], type);
             });
 
             // TODO
@@ -189,6 +199,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
                     'objectType': 'collection'
                 };
             }
+
             // TODO
             previousMessage.activity.published = message.activity.published;
 
@@ -200,7 +211,6 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         aggregates[activityType][aggregateKey].message = message;
         aggregates[activityType][aggregateKey].timeout = setTimeout(function() {
             notifySubscribers(aggregates[activityType][aggregateKey].message);
-            //delete aggregates[activityType][aggregateKey];
         }, 1000);
     };
 
