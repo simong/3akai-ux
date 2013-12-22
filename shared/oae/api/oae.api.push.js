@@ -159,7 +159,6 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      * @api private
      */
     var incomingMessage = function(ev) {
-        console.log('Incoming message: ' + ev.data);
         // Parse the incoming message
         var message = null;
         try {
@@ -313,7 +312,6 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
             'name': name,
             'payload': payload
         };
-        console.log('Sent message: ' + JSON.stringify(message));
 
         // Store a reference to the function that will be called when the response
         // to the message has been received
@@ -340,7 +338,6 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
     var subscribe = exports.subscribe = function(resourceId, streamType, token, messageCallback, callback) {
         // Set a default callback function in case no callback function has been provided
         callback = callback || function() {};
-        console.log('Subscribed for ' + resourceId + ' - ' + streamType);
 
         // Check if there is already a subscription for the provided channel and stream type.
         // If there is, we just add the message callback to the list of callback function to call when

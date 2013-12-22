@@ -79,6 +79,9 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
         // search does not need to provide a paging parameter
         var initialSearchDone = false;
 
+        // Variable that keeps track of whether or not the initial list was an empty list
+        var emptyList = false;
+
         ////////////////////////
         // Infinite scrolling //
         ////////////////////////
@@ -217,6 +220,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
                 // Bring the filtered html back to templateOutput
                 templateOutput = $.trim($tmp.html());
 
+                // TODO: Remove empty item when items are appended/prepended
                 if (prepend) {
                     // Prepend and fade in the results. The `prepend` function cannot be
                     // used as the entire list would otherwise be faded in
@@ -249,6 +253,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
                         canRequestMoreData = false;
                         if ($('li', $listContainer).length === 0) {
                             if (options.emptyListProcessor) {
+                                emptyList = true;
                                 options.emptyListProcessor();
                             }
                         }

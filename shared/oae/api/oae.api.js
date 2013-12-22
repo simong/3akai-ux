@@ -113,7 +113,7 @@ define(['oae.api.authentication', 'oae.api.config', 'oae.api.content', 'oae.api.
                                         // Initialize websocket push API
                                         oae.api.push.init(oae.data.me.anon, function(err) {
                                             if (err) {
-                                                throw new Error('Could not initialize the push API')
+                                                throw new Error('Could not initialize the push API');
                                             }
                                         });
                                     });
