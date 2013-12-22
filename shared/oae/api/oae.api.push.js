@@ -68,18 +68,24 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
     //   }
     var subscriptions = {};
 
-    // Variable that keeps track of the aggregated messages. For each activity type that requires
-    // aggregation, an aggregation key is generated based on the fields of the activity on which
-    // aggregation needs to be performed. Each aggregation key contains a timeout function that will
-    // be executed when the aggregation timeout finishes and the actual push message containing
-    // the aggregated activities.
+    // Variable that keeps track of the aggregated messages. Aggregation is only done within the same
+    // channel and stream type. For each activity type that requires aggregation, an aggregation key
+    // is generated based on the fields of the activity on which aggregation needs to be performed.
+    // Each aggregation key contains a timeout function that will be executed when the aggregation
+    // timeout finishes and the actual push message containing the aggregated activities.
     // The message aggregates will be stored in the following way:
     //
     //   {
-    //      '<activityType>': {
-    //          '<aggregateKey>': {
-    //              'timeout': <aggregateCallback>,
-    //              'message': <aggregatedMessage>
+    //      '<channel>': {
+    //          '<streamType>': {
+    //              '<activityType>': {
+    //                  '<aggregateKey>': {
+    //                      'timeout': <aggregateCallback>,
+    //                      'message': <aggregatedMessage>
+    //                  },
+    //                  ...
+    //              },
+    //              ...
     //          },
     //          ...
     //      },
@@ -153,6 +159,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      * @api private
      */
     var incomingMessage = function(ev) {
+        console.log('Incoming message: ' + ev.data);
         // Parse the incoming message
         var message = null;
         try {
@@ -185,17 +192,24 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
     /**
      * Aggregate the activity on a message with other activities of the same activity type and
      * equal activity fields (`actor`, `object`, `target`) as defined in the aggregation rules.
-     * The subscribers to these activities will only receive the aggregated activity after a
-     * configured amount of time, to make sure that aggregatable activities that arrive within
-     * that period of time are aggregated instead of delivered individually.
+     * Aggregation is only done within the same channel and stream type. The subscribers to these
+     * activities will only receive the aggregated activity after a configured amount of time, to
+     * make sure that aggregatable activities that arrive within that period of time are aggregated
+     * instead of delivered individually.
      *
      * @param  {Object}     newMessage          Push notification message for which the activity needs to be aggregated
      * @api private
      */
     var aggregateMessages = function(newMessage) {
+        // Only aggregate activities within the same channel and stream type
+        var resourceId = newMessage.resourceId;
+        var streamType = newMessage.streamType;
+        aggregates[resourceId] = aggregates[resourceId] || {};
+        aggregates[resourceId][streamType] = aggregates[resourceId][streamType] || {};
+
         // Only aggregate activities of the same activity type (e.g. `content-create`)
         var activityType = newMessage.activity['oae:activityType'];
-        aggregates[activityType] = aggregates[activityType] || {};
+        aggregates[resourceId][streamType][activityType] = aggregates[resourceId][streamType][activityType] || {};
 
         // Generate the aggregation key used to determine which activities should be aggregated
         // together. This aggregation key consists of the values of all of the fields in the
@@ -206,13 +220,14 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         });
         aggregateKey = aggregateKey.join('#');
 
+        var aggregate = aggregates[resourceId][streamType][activityType][aggregateKey];
+
         // The aggregation is only necessary when an activity with the same aggregation key for
         // the same activity type already exists. Otherwise, the provided activity is the first of
         // its type and aggregation key, in which it can be used as is as the initial aggregate
-        if (aggregates[activityType][aggregateKey]) {
+        if (aggregate) {
 
             // Cancel the existing aggregate timeout
-            var aggregate = aggregates[activityType][aggregateKey];
             clearTimeout(aggregate.timeout);
 
             // Take the message on the existing aggregate, containing the
@@ -271,11 +286,11 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         // Function that will notify all subscribers for the message's resource id channel
         // and stream type after the configured aggregation timeout
         var aggregateTimeout = function() {
-            notifySubscribers(aggregates[activityType][aggregateKey].message);
+            notifySubscribers(aggregates[resourceId][streamType][activityType][aggregateKey].message);
         };
 
         // Store the aggregate for future aggregation
-        aggregates[activityType][aggregateKey] = {
+        aggregates[resourceId][streamType][activityType][aggregateKey] = {
             'message': newMessage,
             'timeout': setTimeout(aggregateTimeout, AGGREGATION_TIMEOUT)
         };
@@ -297,7 +312,8 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
             'id': utilAPI.generateId(),
             'name': name,
             'payload': payload
-        }
+        };
+        console.log('Sent message: ' + JSON.stringify(message));
 
         // Store a reference to the function that will be called when the response
         // to the message has been received
@@ -324,7 +340,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
     var subscribe = exports.subscribe = function(resourceId, streamType, token, messageCallback, callback) {
         // Set a default callback function in case no callback function has been provided
         callback = callback || function() {};
-        console.log(resourceId);
+        console.log('Subscribed for ' + resourceId + ' - ' + streamType);
 
         // Check if there is already a subscription for the provided channel and stream type.
         // If there is, we just add the message callback to the list of callback function to call when
