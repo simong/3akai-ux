@@ -115,7 +115,7 @@ require(['jquery','oae.core'], function($, oae) {
                         {
                             'id': 'network',
                             'settings': {
-                                'principalId': oae.data.me.id,
+                                'context': oae.data.me,
                                 'canManage': true
                             }
                         }

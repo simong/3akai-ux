@@ -324,6 +324,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
     var subscribe = exports.subscribe = function(resourceId, streamType, token, messageCallback, callback) {
         // Set a default callback function in case no callback function has been provided
         callback = callback || function() {};
+        console.log(resourceId);
 
         // Check if there is already a subscription for the provided channel and stream type.
         // If there is, we just add the message callback to the list of callback function to call when

@@ -115,7 +115,7 @@ require(['jquery', 'oae.core'], function($, oae) {
                             {
                                 'id': 'activity',
                                 'settings': {
-                                    'principalId': groupProfile.id,
+                                    'context': groupProfile,
                                     'canManage': groupProfile.isManager
                                 }
                             }
@@ -136,7 +136,7 @@ require(['jquery', 'oae.core'], function($, oae) {
                             {
                                 'id': 'contentlibrary',
                                 'settings': {
-                                    'principalId': groupProfile.id,
+                                    'context': groupProfile,
                                     'canManage': groupProfile.isManager
                                 }
                             }
@@ -155,7 +155,7 @@ require(['jquery', 'oae.core'], function($, oae) {
                             {
                                 'id': 'discussionslibrary',
                                 'settings': {
-                                    'principalId': groupProfile.id,
+                                    'context': groupProfile,
                                     'canManage': groupProfile.isManager
                                 }
                             }
@@ -174,7 +174,7 @@ require(['jquery', 'oae.core'], function($, oae) {
                             {
                                 'id': 'members',
                                 'settings': {
-                                    'principalId': groupProfile.id,
+                                    'context': groupProfile,
                                     'canManage': groupProfile.isManager
                                 }
                             }
