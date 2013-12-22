@@ -167,7 +167,6 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * @param  {Boolean}     [prepend]    `true` when we want to prepend the new items to the list, `false` when we want to append the new items to the list
          */
         var processList = function(data, prepend) {
-            console.log(data);
             if (options.postProcessor) {
                 data = options.postProcessor(data);
             }
@@ -180,7 +179,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * Results that are already in the list will not be re-rendered.
          *
          * @param  {Object}     data         Post-processed server response
-         * @param  {Boolean}    [prepend]    true when we want to prepend the new items to the list, false when we want to append the new items to the list
+         * @param  {Boolean}    [prepend]    `true` when we want to prepend the new items to the list, `false` when we want to append the new items to the list
          */
         var renderList = function(data, prepend) {
             // Check if the infinite scroll instance still exists. It's possible that
@@ -216,13 +215,14 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
                 });
 
                 // Bring the filtered html back to templateOutput
-                templateOutput = $tmp.html();
+                templateOutput = $.trim($tmp.html());
 
                 if (prepend) {
-                    // Prepend the HTML
-                    $($.trim(templateOutput)).hide().prependTo($listContainer).fadeIn('slow');
-//                    $listContainer.prepend().hide().toggle('slide');
+                    // Prepend and fade in the results. The `prepend` function cannot be
+                    // used as the entire list would otherwise be faded in
+                    $(templateOutput).hide().prependTo($listContainer).fadeIn('slow');
                 } else {
+                    // Append the results
                     $listContainer.append(templateOutput);
                 }
 
@@ -279,8 +279,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * Function called to prepend items to the list. This will be used when UI caching needs
          * to be used
          *
-         * @param  {Object}       items       Array of items to be prepended
-         * TODO
+         * @param  {Object}       items       Object containing the array of items to be prepended
          */
         var prependItems = function(items) {
             processList(items, true);
