@@ -279,7 +279,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * Function called to prepend items to the list. This will be used when UI caching needs
          * to be used
          *
-         * @param  {Object}       items       Object containing the array of items to be prepended
+         * @param  {Object}       items       Object containing the array of items to be prepended (e.g. `{'results': [<items]}`)
          */
         var prependItems = function(items) {
             processList(items, true);
