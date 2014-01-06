@@ -166,6 +166,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         } catch (err) {
             throw new Error('Could not parse incoming websocket message');
         }
+        console.log(message);
 
         // The message is a proper push notification. In this case, we notify all places
         // that have subscribed to the resource channel the event was sent over and the
