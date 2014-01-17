@@ -55,6 +55,8 @@ require(['jquery', 'underscore', 'oae.core'], function($, _, oae) {
             setUpContext();
             // We can now unhide the page
             oae.api.util.showPage();
+            // Setup the push notifications to update this content profile on the fly
+            setUpPushNotifications();
         });
     };
 
@@ -108,6 +110,21 @@ require(['jquery', 'underscore', 'oae.core'], function($, _, oae) {
             }
         });
         $(document).trigger('oae.context.send', contentProfile);
+    };
+
+    /**
+     * Subscribe to content activity push notifications, allowing for updating the content profile after the page load
+     */
+    var setUpPushNotifications = function() {
+        oae.api.push.subscribe(contentId, 'activity', contentProfile.signature, 'internal', false, function(activity) {
+            if (activity['oae:activityType'] === 'content-update' || activity['oae:activityType'] === 'content-update-visibility') {
+                activity.object.canShare = contentProfile.canShare;
+                activity.object.isManager = contentProfile.isManager;
+
+                contentProfile = activity.object;
+                setUpClips();
+            }
+        });
     };
 
 

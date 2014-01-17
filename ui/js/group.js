@@ -58,6 +58,9 @@ require(['jquery', 'oae.core'], function($, oae) {
                 // Render the navigation
                 setUpNavigation();
             }
+
+            // Set up the group push notifications to update this group profile on the fly
+            setUpPushNotifications();
         });
     };
 
@@ -191,6 +194,28 @@ require(['jquery', 'oae.core'], function($, oae) {
     };
 
 
+    //////////
+    // PUSH //
+    //////////
+
+    /**
+     * Subscribe to group activity push notifications, allowing for updating the group profile after the page load
+     */
+    var setUpPushNotifications = function() {
+        oae.api.push.subscribe(groupId, 'activity', groupProfile.signature, 'internal', false, function(activity) {
+            // The group has been updated
+            if (activity['oae:activityType'] === 'group-update' || activity['oae:activityType'] === 'group-update-visibility') {
+                activity.object.canJoin = groupProfile.canJoin;
+                activity.object.isManager = groupProfile.isManager;
+                activity.object.isMember = groupProfile.isMember;
+
+                groupProfile = activity.object;
+                oae.api.util.template().render($('#group-clip-template'), {'group': groupProfile}, $('#group-clip-container'));
+            }
+        });
+    };
+
+
     ///////////////////
     // MANAGE ACCESS //
     ///////////////////
@@ -300,7 +325,6 @@ require(['jquery', 'oae.core'], function($, oae) {
         groupProfile = data;
         setUpClip();
     });
-
 
     getGroupProfile();
 

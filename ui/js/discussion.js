@@ -55,6 +55,8 @@ require(['jquery','oae.core'], function($, oae) {
             setUpContext();
             // We can now unhide the page
             oae.api.util.showPage();
+            // Set up the discussion push notifications
+            setUpPushNotifications();
         });
     };
 
@@ -98,6 +100,23 @@ require(['jquery','oae.core'], function($, oae) {
             $('#discussion-topic').html(topic);
             $('#discussion-topic-container').show();
         }
+    };
+
+    /**
+     * Subscribe to discussion activity push notifications, allowing for updating the discussion profile after the page load
+     */
+    var setUpPushNotifications = function() {
+        oae.api.push.subscribe(discussionId, 'activity', discussionProfile.signature, 'internal', false, function(activity) {
+            if (activity['oae:activityType'] === 'discussion-update' || activity['oae:activityType'] === 'discussion-update-visibility') {
+                activity.object.canShare = discussionProfile.canShare;
+                activity.object.canPost = discussionProfile.canPost;
+                activity.object.isManager = discussionProfile.isManager;
+
+                discussionProfile = activity.object;
+                setUpClips();
+                setUpTopic();
+            }
+        });
     };
 
 
