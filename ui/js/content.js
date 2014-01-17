@@ -117,12 +117,12 @@ require(['jquery', 'underscore', 'oae.core'], function($, _, oae) {
      */
     var setUpPushNotifications = function() {
         oae.api.push.subscribe(contentId, 'activity', contentProfile.signature, 'internal', false, function(activity) {
-            if (activity['oae:activityType'] === 'content-update' || activity['oae:activityType'] === 'content-update-visibility') {
+            if (activity.actor.id !== oae.data.me.id && (activity['oae:activityType'] === 'content-update' || activity['oae:activityType'] === 'content-update-visibility' || activity['oae:activityType'] === 'content-revision' || activity['oae:activityType'] === 'previews-finished')) {
                 activity.object.canShare = contentProfile.canShare;
                 activity.object.isManager = contentProfile.isManager;
 
-                contentProfile = activity.object;
-                setUpClips();
+                var contentObj = activity.object;
+                $(document).trigger('oae.content.update', contentObj);
             }
         });
     };
