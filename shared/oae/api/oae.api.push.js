@@ -166,26 +166,39 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         } catch (err) {
             throw new Error('Could not parse incoming websocket message');
         }
-        console.log(message);
 
         // The message is a proper push notification. In this case, we notify all places
         // that have subscribed to the resource channel the event was sent over and the
         // associated stream type
         if (message.resourceId && message.streamType) {
-
-            // Check if the activity that is associated to the push notification requires
-            // aggregation. If it doesn't, it can be distributed to its subscribers straight away
-            var activityType = message.activity['oae:activityType'];
-            if (activityType && AGGREGATION_RULES[activityType]) {
-                aggregateMessages(message);
-            } else {
-                notifySubscribers(message);
-            }
+            notifySubscribers(message, false);
 
         // The message is an acknowledgement message. In this case, the original message's
         // acknowledgement callback function is executed
         } else if (acknowledgementCallbacks[message.replyTo]) {
             acknowledgementCallbacks[message.replyTo](message);
+        }
+    };
+
+    /**
+     * Notifiy all subscribers that have subscribed to push notifications on the message's resource
+     * channel and the message's stream type
+     *
+     * @param  {Object}     message             Push notification message for which the containing activity will be delivered to its subscribers
+     */
+    var notifySubscribers = function(message, hasBeenAggregated) {
+        if (subscriptions[message.resourceId] && subscriptions[message.resourceId][message.streamType]) {
+            _.each(subscriptions[message.resourceId][message.streamType], function(listener) {
+                // Check if the activity that is associated to the push notification requires
+                // aggregation. If it doesn't, it can be distributed to its subscribers straight away
+                var activityType = message.activity['oae:activityType'];
+                if (!hasBeenAggregated && listener.performAggregation) {
+                    aggregateMessages(message);
+                } else {
+                    // The activity object on the message is delivered, rather than the entire activity
+                    listener.messageCallback(message.activity);
+                }
+            });
         }
     };
 
@@ -286,7 +299,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         // Function that will notify all subscribers for the message's resource id channel
         // and stream type after the configured aggregation timeout
         var aggregateTimeout = function() {
-            notifySubscribers(aggregates[resourceId][streamType][activityType][aggregateKey].message);
+            notifySubscribers(aggregates[resourceId][streamType][activityType][aggregateKey].message, true);
         };
 
         // Store the aggregate for future aggregation
@@ -332,26 +345,33 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      * @param  {String}     resourceId          Id of the resource on which channel to subscribe (e.g. user, group, content, discussion)
      * @param  {String}     streamType          Name of the stream type to subscribe to (e.g. `activity`, `message`)
      * @param  {String}     token               Token used to authorize the subscription. This token will be available on the entity that represents the channel that's being subscribed to
+     * @param  {String}     transformer         The format in which the activity entities should be formatted. One of `internal` or `activitystreams`. Defaults to `internal`
+     * @param  {Boolean}    performAggregation  Whether or not aggregated messages should be returned in the `messageCallback`. If false is specified, each incoming message will be passed to the callback as-is, otherwise it will be aggregated with previously received messages. Defaults to `false`
      * @param  {Function}   messageCallback     Function executed when a message on the provided channel and of the provided stream type arrives
      * @param  {Function}   [callback]          Standard callback function
      * @param  {Object}     [callback.err]      Error object containing error code and message
      */
-    var subscribe = exports.subscribe = function(resourceId, streamType, token, messageCallback, callback) {
+    var subscribe = exports.subscribe = function(resourceId, streamType, token, transformer, performAggregation, messageCallback, callback) {
         // Set a default callback function in case no callback function has been provided
         callback = callback || function() {};
+
+        // Default the transformer to internal
+        transformer = transformer || 'internal';
+
+        performAggregation = performAggregation || false;
 
         // Check if there is already a subscription for the provided channel and stream type.
         // If there is, we just add the message callback to the list of callback function to call when
         // such a message comes in
         if (subscriptions[resourceId] && subscriptions[resourceId][streamType]) {
-            subscriptions[resourceId][streamType].push(messageCallback);
+            subscriptions[resourceId][streamType].push({'performAggregation': performAggregation, 'messageCallback': messageCallback});
             return callback();
         }
 
         // Register the message callback function that should be called when a message for
         // the provided channel and stream type comes in
         subscriptions[resourceId] = subscriptions[resourceId] || {};
-        subscriptions[resourceId][streamType] = [messageCallback];
+        subscriptions[resourceId][streamType] = [{'performAggregation': performAggregation, 'messageCallback': messageCallback}];
 
         // Construct the subscription request
         var name = 'subscribe';
@@ -360,7 +380,8 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
                 'resourceId': resourceId,
                 'streamType': streamType
             },
-            'token': token
+            'token': token,
+            'transformer': transformer
         };
 
         // If the websocket has not been established yet, the subscription is queued until
@@ -372,20 +393,4 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
             sendMessage(name, payload, callback);
         }
     };
-
-    /**
-     * Notifiy all subscribers that have subscribed to push notifications on the message's resource
-     * channel and the message's stream type
-     *
-     * @param  {Object}     message             Push notification message for which the containing activity will be delivered to its subscribers
-     */
-    var notifySubscribers = function(message) {
-        if (subscriptions[message.resourceId] && subscriptions[message.resourceId][message.streamType]) {
-            _.each(subscriptions[message.resourceId][message.streamType], function(messageCallback) {
-                // The activity object on the message is delivered, rather than the entire activity
-                messageCallback(message.activity);
-            });
-        }
-    };
-
 });
