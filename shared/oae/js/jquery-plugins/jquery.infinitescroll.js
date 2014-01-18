@@ -287,6 +287,10 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
          * @param  {Object}       items       Object containing the array of items to be prepended (e.g. `{'results': [<items]}`)
          */
         var prependItems = function(items) {
+            // In case the list was previously empty, we need to remove the "no results" message
+            if (emptyList) {
+                $listContainer.html('');
+            }
             processList(items, true);
         };
 
