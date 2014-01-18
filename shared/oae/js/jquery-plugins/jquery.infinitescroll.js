@@ -289,7 +289,7 @@ define(['jquery', 'underscore', 'oae.api.util', 'oae.api.i18n'], function (jQuer
         var prependItems = function(items) {
             // In case the list was previously empty, we need to remove the "no results" message
             if (emptyList) {
-                $listContainer.html('');
+                $listContainer.empty();
             }
             processList(items, true);
         };
