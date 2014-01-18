@@ -171,7 +171,7 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
         // that have subscribed to the resource channel the event was sent over and the
         // associated stream type
         if (message.resourceId && message.streamType) {
-            notifySubscribers(message, false);
+            notifySubscribers(message, true);
 
         // The message is an acknowledgement message. In this case, the original message's
         // acknowledgement callback function is executed
@@ -184,20 +184,37 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      * Notifiy all subscribers that have subscribed to push notifications on the message's resource
      * channel and the message's stream type
      *
-     * @param  {Object}     message             Push notification message for which the containing activity will be delivered to its subscribers
+     * @param  {Object}     message                 Push notification message for which the containing activity will be delivered to its subscribers
+     * @param  {Boolean}    needsAggregationCheck   Indicates whether or not the activity needs to be aggregated
+     * @param  {Boolean}    hasBeenAggregated       Indicates whether or not the activity has been aggregated with a previous one
      */
-    var notifySubscribers = function(message, hasBeenAggregated) {
+    var notifySubscribers = function(message, needsAggregationCheck, hasBeenAggregated) {
+        hasBeenAggregated = hasBeenAggregated || false;
+
+        var listenersNeedingAggregations = [];
+
         if (subscriptions[message.resourceId] && subscriptions[message.resourceId][message.streamType]) {
             _.each(subscriptions[message.resourceId][message.streamType], function(listener) {
                 // Check if the activity that is associated to the push notification requires
                 // aggregation. If it doesn't, it can be distributed to its subscribers straight away
                 var activityType = message.activity['oae:activityType'];
-                if (!hasBeenAggregated && listener.performAggregation) {
-                    aggregateMessages(message);
+                if (needsAggregationCheck && listener.performAggregation) {
+                    listenersNeedingAggregations.push(listener);
                 } else {
                     // The activity object on the message is delivered, rather than the entire activity
-                    listener.messageCallback(message.activity);
+                    listener.messageCallback(message.activity, hasBeenAggregated);
                 }
+            });
+        }
+
+        if (listenersNeedingAggregations.length > 0) {
+            // Perform the aggregation once
+            aggregateMessages(message, function(newMessage, hasBeenAggregated) {
+
+                // Distribute it to each listener
+                _.each(listenersNeedingAggregations, function(listener) {
+                    listener.messageCallback(newMessage.activity, hasBeenAggregated);
+                });
             });
         }
     };
@@ -210,10 +227,13 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
      * make sure that aggregatable activities that arrive within that period of time are aggregated
      * instead of delivered individually.
      *
-     * @param  {Object}     newMessage          Push notification message for which the activity needs to be aggregated
+     * @param  {Object}     newMessage                      Push notification message for which the activity needs to be aggregated
+     * @param  {Function}   callback                        Standard callback method that gets executed when the message has been aggregated
+     * @param  {Object}     callback.aggregatedMessage      The aggregated message
+     * @param  {Boolean}    callback.hasBeenAggregated      Whether or not any aggregation really took place
      * @api private
      */
-    var aggregateMessages = function(newMessage) {
+    var aggregateMessages = function(newMessage, callback) {
         // Only aggregate activities within the same channel and stream type
         var resourceId = newMessage.resourceId;
         var streamType = newMessage.streamType;
@@ -235,10 +255,12 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
 
         var aggregate = aggregates[resourceId][streamType][activityType][aggregateKey];
 
+        var hasBeenAggregated = false;
+
         // The aggregation is only necessary when an activity with the same aggregation key for
         // the same activity type already exists. Otherwise, the provided activity is the first of
         // its type and aggregation key, in which it can be used as is as the initial aggregate
-        if (aggregate) {
+        if (aggregate && aggregate.message.activity['oae:activityId'] !== newMessage.activity['oae:activityId']) {
 
             // Cancel the existing aggregate timeout
             clearTimeout(aggregate.timeout);
@@ -294,18 +316,15 @@ define(['exports', 'jquery', 'underscore', 'oae.api.util', 'sockjs'], function(e
             // that the timestamp is always the one from the latest activity that happened
             aggregateMessage.activity.published = newMessage.activity.published;
             newMessage = aggregateMessage;
+            hasBeenAggregated = true;
         }
-
-        // Function that will notify all subscribers for the message's resource id channel
-        // and stream type after the configured aggregation timeout
-        var aggregateTimeout = function() {
-            notifySubscribers(aggregates[resourceId][streamType][activityType][aggregateKey].message, true);
-        };
 
         // Store the aggregate for future aggregation
         aggregates[resourceId][streamType][activityType][aggregateKey] = {
             'message': newMessage,
-            'timeout': setTimeout(aggregateTimeout, AGGREGATION_TIMEOUT)
+            'timeout': setTimeout(function() {
+                return callback(newMessage, hasBeenAggregated);
+            }, AGGREGATION_TIMEOUT)
         };
     };
 
