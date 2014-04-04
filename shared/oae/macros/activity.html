@@ -11,13 +11,13 @@
         {if activity.actor['oae:collection'].length > 1}
             {var actorCount = activity.actor['oae:collection'].length}
             {var actor2 = oae.api.util.security().encodeForHTML(activity.actor['oae:collection'][1].displayName)}
-            {var actor2URL = oae.api.util.security().encodeForHTML(activity.actor['oae:collection'][1]['oae:profilePath'])}
+            {var actor2URL = oae.api.util.security().encodeForHTML(activity.actor['oae:collection'][1]['oae:profilePath'] || activity.actor['oae:collection'][1].profilePath)}
         {/if}
     {else}
         {var actor1Obj = activity.actor}
     {/if}
     {var actor1 = oae.api.util.security().encodeForHTML(actor1Obj.displayName)}
-    {var actor1URL = oae.api.util.security().encodeForHTML(actor1Obj['oae:profilePath'])}
+    {var actor1URL = oae.api.util.security().encodeForHTML(actor1Obj['oae:profilePath'] || actor1Obj.profilePath)}
 
     <!-- Prepare the object-related variables that will be present in the i18n keys -->
     {if activity.object['oae:collection']}
@@ -25,13 +25,13 @@
         {if activity.object['oae:collection'].length > 1}
             {var objectCount = activity.object['oae:collection'].length}
             {var object2 = oae.api.util.security().encodeForHTML(activity.object['oae:collection'][1].displayName)}
-            {var object2URL = oae.api.util.security().encodeForHTML(activity.object['oae:collection'][1]['oae:profilePath'])}
+            {var object2URL = oae.api.util.security().encodeForHTML(activity.object['oae:collection'][1]['oae:profilePath'] || activity.object['oae:collection'][1].profilePath)}
         {/if}
     {else}
         {var object1Obj = activity.object}
     {/if}
     {var object1 = oae.api.util.security().encodeForHTML(object1Obj.displayName)}
-    {var object1URL = oae.api.util.security().encodeForHTML(object1Obj['oae:profilePath'])}
+    {var object1URL = oae.api.util.security().encodeForHTML(object1Obj['oae:profilePath'] || object1Obj.profilePath)}
     {if object1Obj['oae:tenant']}
         {var object1Tenant = oae.api.util.security().encodeForHTML(object1Obj['oae:tenant'].displayName)}
     {/if}
@@ -43,13 +43,13 @@
             {if activity.target['oae:collection'].length > 1}
                 {var targetCount = activity.target['oae:collection'].length}
                 {var target2 = oae.api.util.security().encodeForHTML(activity.target['oae:collection'][1].displayName)}
-                {var target2URL = oae.api.util.security().encodeForHTML(activity.target['oae:collection'][1]['oae:profilePath'])}
+                {var target2URL = oae.api.util.security().encodeForHTML(activity.target['oae:collection'][1]['oae:profilePath'] || activity.target['oae:collection'][1].profilePath)}
             {/if}
         {else}
             {var target1Obj = activity.target}
         {/if}
         {var target1 = oae.api.util.security().encodeForHTML(target1Obj.displayName)}
-        {var target1URL = oae.api.util.security().encodeForHTML(target1Obj['oae:profilePath'])}
+        {var target1URL = oae.api.util.security().encodeForHTML(target1Obj['oae:profilePath'] || target1Obj.profilePath)}
     {/if}
 
     <!-- Depending on the activity type, we render a different template that is specific to that activity,
@@ -143,11 +143,12 @@
 -->
 {macro renderContentAddToLibrarySummary(activity, actor1, actor1URL, object1, object1URL, object2, object2URL, objectCount)}
     {if !objectCount}
-        {if activity.object['oae:resourceSubType'] === 'collabdoc'}
+        {var resourceSubType = activity.object['oae:resourceSubType'] || activity.object.resourceSubType}
+        {if resourceSubType === 'collabdoc'}
             __MSG__ACTIVITY_CONTENT_ADD_LIBRARY_COLLABDOC__
-        {elseif activity.object['oae:resourceSubType'] === 'file'}
+        {elseif resourceSubType === 'file'}
             __MSG__ACTIVITY_CONTENT_ADD_LIBRARY_FILE__
-        {elseif activity.object['oae:resourceSubType'] === 'link'}
+        {elseif resourceSubType === 'link'}
             __MSG__ACTIVITY_CONTENT_ADD_LIBRARY_LINK__
         {/if}
     {elseif objectCount === 2}
@@ -170,7 +171,8 @@
  * @param  {String}       object1URL    Profile path for the first object on the activity
 -->
 {macro renderContentCommentSummary(activity, actor1, actor1URL, actor2, actor2URL, actorCount, object1, object1URL)}
-    {if activity.target['oae:resourceSubType'] === 'collabdoc'}
+    {var resourceSubType = activity.target['oae:resourceSubType'] || activity.target.resourceSubType}
+    {if resourceSubType === 'collabdoc'}
         {if !actorCount}
             __MSG__ACTIVITY_CONTENT_COMMENT_COLLABDOC_1__
         {elseif actorCount === 2}
@@ -178,7 +180,7 @@
         {else}
             __MSG__ACTIVITY_CONTENT_COMMENT_COLLABDOC_2+__
         {/if}
-    {elseif activity.target['oae:resourceSubType'] === 'file'}
+    {elseif resourceSubType === 'file'}
         {if !actorCount}
             __MSG__ACTIVITY_CONTENT_COMMENT_FILE_1__
         {elseif actorCount === 2}
@@ -186,7 +188,7 @@
         {else}
             __MSG__ACTIVITY_CONTENT_COMMENT_FILE_2+__
         {/if}
-    {elseif activity.target['oae:resourceSubType'] === 'link'}
+    {elseif resourceSubType === 'link'}
         {if !actorCount}
             __MSG__ACTIVITY_CONTENT_COMMENT_LINK_1__
         {elseif actorCount === 2}
@@ -211,11 +213,12 @@
 -->
 {macro renderContentCreateSummary(activity, actor1, actor1URL, object1, object1URL, object2, object2URL, objectCount)}
     {if !objectCount}
-        {if activity.object['oae:resourceSubType'] === 'collabdoc'}
+        {var resourceSubType = activity.object['oae:resourceSubType'] || activity.object.resourceSubType}
+        {if resourceSubType === 'collabdoc'}
             __MSG__ACTIVITY_CONTENT_CREATE_COLLABDOC__
-        {elseif activity.object['oae:resourceSubType'] === 'file'}
+        {elseif resourceSubType === 'file'}
             __MSG__ACTIVITY_CONTENT_CREATE_FILE__
-        {elseif activity.object['oae:resourceSubType'] === 'link'}
+        {elseif resourceSubType === 'link'}
             __MSG__ACTIVITY_CONTENT_CREATE_LINK__
         {/if}
     {elseif objectCount === 2}
