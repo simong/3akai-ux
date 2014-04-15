@@ -138,3 +138,17 @@ td form {
     color: #FFFFFF;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
+
+/* ACTIVITY REFERENCE */
+
+#registered-activities table {
+    width: 100%;
+    border: 1px solid #ccc;
+}
+#registered-activities table thead td {
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+#registered-activities table td {
+    width: 25%;
+}

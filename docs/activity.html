@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <noscript>
+            <meta http-equiv="Refresh" content="1; URL=/noscript">
+        </noscript>
+
+        <!-- CORE CSS -->
+        <link rel="stylesheet" type="text/css" href="/shared/oae/css/oae.core.css" />
+        <link rel="stylesheet" type="text/css" href="/api/ui/skin" />
+
+        <!-- PAGE CSS -->
+        <link href="/docs/css/doc.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <!-- HEADER -->
+        <div id="doc-header-container">
+            <div id="doc-header-content">
+                <h1>Activity Reference</h1>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <main id="doc-content-container" role="main">
+            <div class="row">
+                <div id="doc-modules-container" class="col-sm-2">
+                    <ul class="nav nav-list bs-docs-sidenav">
+                        <li>
+                            <a href="/docs/activity#entities"><i class="icon-chevron-right pull-right"></i> <span>Entities</span></a>
+                            <a href="/docs/activity#associations"><i class="icon-chevron-right pull-right"></i> <span>Assocations</span></a>
+                            <a href="/docs/activity#activities"><i class="icon-chevron-right pull-right"></i> <span>Activities</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="doc-module-container" class="col-sm-9">
+                    <h2 id="structure">Activity structure</h2>
+                    <p>For an in-depth technical overview of how activities are designed, please check the <a href="https://github.com/oaeproject/Hilary/wiki/Activity-API" target="_blank">Activity API wiki page</a>.<br />
+                        This page is intended to give a quick overview of what types are registered in the system.</p>
+                    <p>An activity is usually comprimised out of an activity type and 2 or more <a href="#entities">activity entities</a>. <br />These entities are exposed on:</p>
+                    <ul>
+                        <li><code>actor</code> - The entity (usually a user) who triggered the activity</li>
+                        <li><code>object</code> - Describes the primary object of the activity</li>
+                        <li><code>target</code> - Describes the target of the activity. The precise meaning of the activity's target is dependent on the activity type, but will often be the object the English preposition "to"</li>
+                    </ul>
+                    <p>If there were multiple activities of the same type, a collection of entities is exposed on one of these properties.<br />
+                        E.g., In the activity "Jack uploaded 10 files", the <code>actor</code> property will hold a user object for Jack and a collection of 10 content objects for the <code>object</code> property.</p>
+
+                    <h2 id="entities">Entities</h2>
+                    <p>The following is a list of all the registered entity types within the system.</p>
+                    <div id="registered-entities"></div>
+
+                    <h2 id="associations">Associations</h2>
+                    <p>The following is a list of all the registered entity associations within the system per activity entity. <br />
+                        Each assocation returns 1 or more possible user ids for where the activity should end up.</p>
+                    <div id="registered-associations"></div>
+
+                    <h2 id="activities">Activities</h2>
+                    <p>The following is a list of all the registered entity types within the system.</p>
+                    <div id="registered-activities"></div>
+                </div>
+            </div>
+        </main>
+
+        <div id="registered-entities-template"><!--
+            <ul>
+            {for entity in data.entities}
+                <li>
+                    <code>${entity_index}</code> ${entity}
+                </li>
+            {/for}
+            </ul>
+        --></div>
+
+        <div id="registered-associations-template"><!--
+            <ul>
+            {for associationsPerEntityType in data.associations}
+                <li>
+                    <code>${associationsPerEntityType_index}</code>
+                    <ul>
+                        {for association in associationsPerEntityType}
+                            <li id="assocation-${association.name}">
+                                <code>${association.name}</code>
+                                <p>${association.description}</p>
+                            </li>
+                        {/for}
+                    </ul>
+                </li>
+            {/for}
+            </ul>
+        --></div>
+
+        <div id="registered-activities-template"><!--
+            {for activityType in data.types}
+                <h3>${activityType_index}</h3>
+                {if activityType.description}
+                    {if activityType.description.msg}
+                        <p>${activityType.description.msg}</p>
+                    {/if}
+                    {if activityType.description.entities}
+                        <p>The activity properties are as follows:</p>
+                        <ul>
+                        {for entity in activityType.description.entities}
+                            <li>${entity_index}: ${entity}</li>
+                        {/for}
+                        </ul>
+                    {/if}
+                {/if}
+                {if activityType.groupBy && activityType.groupBy.length > 0}
+                    <p>Activities will aggregate on:</p>
+                    <ul>
+                        {for grouping in activityType.groupBy}
+                            <li>
+                                ${grouping.join(' and ')}
+                            </li>
+                        {/for}
+                    </ul>
+                {else}
+                    <p>Activities of this type do <strong>NOT</strong> aggregate.</p>
+                {/if}
+                <br />
+                <p>Routing for this activity happens as follows:</p>
+                <table>
+                    <thead>
+                        <tr>
+                        <td>Stream</td>
+                        <td>Actor</td>
+                        <td>Object</td>
+                        <td>Target</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {for stream in activityType.streams}
+                        <tr>
+                            <td>${stream_index}</td>
+                            <td>${stream.router.actor ? stream.router.actor.join(', ') : ''}</td>
+                            <td>${stream.router.object ? stream.router.object.join(', ') : ''}</td>
+                            <td>${stream.router.target ? stream.router.target.join(', ') : ''}</td>
+                        </tr>
+                    {/for}
+                    </tbody>
+                </table>
+            {/for}
+        --></div>
+
+        <!-- JAVASCRIPT -->
+        <script data-main="/shared/oae/api/oae.bootstrap.js" data-loadmodule="/docs/js/activity.js" src="/shared/vendor/js/requirejs/require-jquery.js"></script>
+    </body>
+</html>
